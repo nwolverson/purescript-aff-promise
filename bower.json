@@ -1,0 +1,16 @@
+{
+  "name": "purescript-aff-promise",
+  "version": "0.1.0",
+  "moduleType": [
+    "node"
+  ],
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "output"
+  ],
+  "dependencies": {
+    "purescript-aff": "~0.14.0"
+  }
+}
