@@ -1,6 +1,5 @@
 {
   "name": "purescript-aff-promise",
-  "version": "0.1.0",
   "moduleType": [
     "node"
   ],
@@ -11,6 +10,6 @@
     "output"
   ],
   "dependencies": {
-    "purescript-aff": "~0.14.0"
+    "purescript-aff": "~1.0.0"
   }
 }
