@@ -4,6 +4,10 @@
     "node"
   ],
   "license": "MIT",
+  "repository": {                                                          
+      "type": "git",                                                         
+      "url": "git://github.com/nwolverson/purescript-aff-promise.git"
+   },  
   "ignore": [
     "**/.*",
     "node_modules",
