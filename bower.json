@@ -3,6 +3,7 @@
   "moduleType": [
     "node"
   ],
+  "license": "MIT",
   "ignore": [
     "**/.*",
     "node_modules",
