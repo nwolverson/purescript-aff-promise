@@ -14,3 +14,11 @@ exports.promise = function (f) {
     });
   };
 };
+
+exports.thenImpl = function(promise){
+  return function(errCB){
+    return function(succCB){
+      promise.then(succCB, errCB);
+    };
+  };
+};
