@@ -1,4 +1,4 @@
-module Control.Promise (fromAff, fromPromise, Promise()) where
+module Control.Promise (fromAff, toAff, Promise()) where
 
 import Prelude
 import Control.Alt ((<|>))
@@ -26,5 +26,9 @@ coerce fn =
          id
          (runExcept ((unsafeReadTagged "Error" fn) <|> (error <$> read fn)))
 
-fromPromise :: forall eff a. Promise a -> Aff eff a
-fromPromise p = makeAff (\errCB succCB -> thenImpl p (errCB <<< coerce) succCB)
+-- | Convert a Promise into an Aff.
+-- | When the promise rejects, we attempt to
+-- | coerce the error value into an actual JavaScript Error object. We can do this
+-- | with Error objects or Strings. Anything else gets a "dummy" Error object.
+toAff :: forall eff a. Promise a -> Aff eff a
+toAff p = makeAff (\errCB succCB -> thenImpl p (errCB <<< coerce) succCB)
