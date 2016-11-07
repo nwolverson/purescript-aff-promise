@@ -17,5 +17,8 @@
   "dependencies": {
     "purescript-aff": "~2.0.0",
     "purescript-foreign": "^3.0.0"
+  },
+  "devDependencies": {
+    "purescript-test-unit": "^10.0.1"
   }
 }

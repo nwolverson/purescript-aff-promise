@@ -15,10 +15,16 @@ exports.promise = function (f) {
   };
 };
 
-exports.thenImpl = function(promise){
-  return function(errCB){
-    return function(succCB){
-      promise.then(succCB, errCB);
+exports.thenImpl = function(promise) {
+  return function(errCB) {
+    return function(succCB) {
+      return function() {
+        promise.then(function (x) {
+          succCB(x)();
+        }, function (e) {
+          errCB(e)();
+        });
+      };
     };
   };
 };
