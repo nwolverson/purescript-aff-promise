@@ -7,4 +7,4 @@ internally, and is only wrapped as a Promise to present an API for consumption i
 
 # Documentation
 
-Available [on Pursuit](https://pursuit.purescript.org/packages/purescript-aff-promise).
+Documentation is available [on Pursuit](https://pursuit.purescript.org/packages/purescript-aff-promise).
