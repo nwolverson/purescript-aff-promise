@@ -10,6 +10,9 @@ import Data.Either (either)
 import Data.Foreign (Foreign, unsafeReadTagged)
 import Data.Foreign.Class (read)
 
+-- | Type of JavaScript Promises (with particular return type)
+-- | Effects are not traced in the Promise type, as they form part of the Eff that
+-- | results in the promise.
 foreign import data Promise :: * -> *
 
 foreign import promise :: forall eff a b.
@@ -17,6 +20,7 @@ foreign import promise :: forall eff a b.
 foreign import thenImpl :: forall a b e.
   Promise a -> (Foreign -> Eff e b) -> (a -> Eff e b) -> Eff e Unit
 
+-- | Convert an Aff into a Promise.
 fromAff :: forall eff a. Aff eff a -> Eff eff (Promise a)
 fromAff aff = promise (\succ err -> void $ runAff err succ aff)
 
