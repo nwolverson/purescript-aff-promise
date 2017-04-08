@@ -7,13 +7,12 @@ import Control.Monad.Eff (Eff)
 import Control.Monad.Eff.Exception (Error, error)
 import Control.Monad.Except (runExcept)
 import Data.Either (either)
-import Data.Foreign (Foreign, unsafeReadTagged)
-import Data.Foreign.Class (read)
+import Data.Foreign (Foreign, readString, unsafeReadTagged)
 
 -- | Type of JavaScript Promises (with particular return type)
 -- | Effects are not traced in the Promise type, as they form part of the Eff that
 -- | results in the promise.
-foreign import data Promise :: * -> *
+foreign import data Promise :: Type -> Type
 
 foreign import promise :: forall eff a b.
   ((a -> Eff eff Unit) -> (b -> Eff eff Unit) -> Eff eff Unit) -> Eff eff (Promise a)
@@ -28,7 +27,7 @@ coerce :: Foreign -> Error
 coerce fn =
   either (\_ -> error "Promise failed, couldn't extract JS Error or String")
          id
-         (runExcept ((unsafeReadTagged "Error" fn) <|> (error <$> read fn)))
+         (runExcept ((unsafeReadTagged "Error" fn) <|> (error <$> readString fn)))
 
 -- | Convert a Promise into an Aff.
 -- | When the promise rejects, we attempt to
