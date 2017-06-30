@@ -15,7 +15,7 @@
     "output"
   ],
   "dependencies": {
-    "purescript-aff": "~3.0.0",
+    "purescript-aff": "~3.1.0",
     "purescript-foreign": "^4.0.0"
   },
   "devDependencies": {
