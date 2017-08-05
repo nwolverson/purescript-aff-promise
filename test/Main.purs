@@ -41,6 +41,10 @@ main = runTest do
         promise <- liftEff $ Promise.fromAff $ pure 42
         res <- Promise.toAff promise
         Assert.assert "round-trip result is 42" $ res == 42
+    test "toAffE" do
+      timeout 100 do
+        res <- Promise.toAffE $ Promise.fromAff $ pure 123
+        Assert.assert "round-trip result for toAffE is 123" $ res == 123
     test "error" do
       promise <- liftEff $ Promise.fromAff $ throwError $ error "err123"
       res <- attempt $ Promise.toAff promise
