@@ -59,8 +59,10 @@ the function returns the network request has already been initated.
 The response can then be converted to an `Aff` and consumed easily:
 
 ```purescript
+import Control.Promise as Promise
+
 fetch :: forall eff. String -> Aff (net :: NET | eff) String
-fetch url = liftEff (fetchImpl url) >>= toAff
+fetch url = liftEff (fetchImpl url) >>= Promise.toAff
 ```
 
 # Documentation
