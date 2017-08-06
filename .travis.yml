@@ -10,6 +10,7 @@ script:
   - npm run -s build
   - bower install
   - npm -s test
+  - git status --porcelain
 after_success:
 - >-
   test $TRAVIS_TAG &&
