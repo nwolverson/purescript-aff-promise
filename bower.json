@@ -15,10 +15,10 @@
     "output"
   ],
   "dependencies": {
-    "purescript-aff": "~3.1.0",
+    "purescript-aff": "~4.0.0",
     "purescript-foreign": "^4.0.0"
   },
   "devDependencies": {
-    "purescript-test-unit": "^11.0.0"
+    "purescript-test-unit": "^13.0.0"
   }
 }
