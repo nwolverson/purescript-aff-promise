@@ -19,11 +19,7 @@ exports.thenImpl = function(promise) {
   return function(errCB) {
     return function(succCB) {
       return function() {
-        promise.then(function (x) {
-          succCB(x)();
-        }, function (e) {
-          errCB(e)();
-        });
+        promise.then(succCB, errCB);
       };
     };
   };
