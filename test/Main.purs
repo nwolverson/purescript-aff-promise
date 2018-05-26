@@ -1,20 +1,17 @@
 module Test.Main where
 
 import Prelude
-import Control.Promise as Promise
+
+import Control.Monad.Except (throwError)
 import Control.Promise (Promise)
-import Test.Unit.Assert as Assert
-import Control.Monad.Aff (attempt)
-import Control.Monad.Aff.AVar (AVAR)
-import Control.Monad.Eff (Eff)
-import Control.Monad.Eff.Class (liftEff)
-import Control.Monad.Eff.Console (CONSOLE)
-import Control.Monad.Eff.Exception (message, error)
-import Control.Monad.Eff.Timer (TIMER)
-import Control.Monad.Error.Class (throwError)
+import Control.Promise as Promise
 import Data.Either (either)
+import Effect (Effect)
+import Effect.Aff (attempt)
+import Effect.Class (liftEffect)
+import Effect.Exception (message, error)
 import Test.Unit (suite, test, timeout)
-import Test.Unit.Console (TESTOUTPUT)
+import Test.Unit.Assert as Assert
 import Test.Unit.Main (runTest)
 
 foreign import helloPromise :: Promise String
@@ -23,7 +20,7 @@ foreign import errPromise :: Promise String
 
 foreign import goodbyePromise :: Promise String
 
-main :: forall e. Eff ( console :: CONSOLE, testOutput :: TESTOUTPUT, avar :: AVAR, timer :: TIMER | e) Unit
+main :: Effect Unit
 main = runTest do
   suite "ffi" do
     test "Hello" do
@@ -38,7 +35,7 @@ main = runTest do
   suite "round-trip" do
     test "success" do
       timeout 100 $ do
-        promise <- liftEff $ Promise.fromAff $ pure 42
+        promise <- liftEffect $ Promise.fromAff $ pure 42
         res <- Promise.toAff promise
         Assert.assert "round-trip result is 42" $ res == 42
     test "toAffE" do
@@ -46,6 +43,6 @@ main = runTest do
         res <- Promise.toAffE $ Promise.fromAff $ pure 123
         Assert.assert "round-trip result for toAffE is 123" $ res == 123
     test "error" do
-      promise <- liftEff $ Promise.fromAff $ throwError $ error "err123"
+      promise <- liftEffect $ Promise.fromAff $ throwError $ error "err123"
       res <- attempt $ Promise.toAff promise
       Assert.equal "err123" $ either message (const "-") res
