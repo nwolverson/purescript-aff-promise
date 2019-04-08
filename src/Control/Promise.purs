@@ -1,4 +1,4 @@
-module Control.Promise (fromAff, toAff, toAffE, Promise()) where
+module Control.Promise (fromAff, toAff, toAff', toAffE, Promise()) where
 
 import Prelude
 
@@ -37,10 +37,16 @@ coerce fn =
 -- | coerce the error value into an actual JavaScript Error object. We can do this
 -- | with Error objects or Strings. Anything else gets a "dummy" Error object.
 toAff :: forall a. Promise a -> Aff a
-toAff p = makeAff
+toAff = toAff' coerce
+
+-- | Convert a Promise into an Aff with custom Error coercion.
+-- | When the promise rejects, we attempt to coerce the error value into an
+-- | actual JavaScript Error object using the provided function.
+toAff' :: forall a. (Foreign -> Error) -> Promise a -> Aff a
+toAff' customCoerce p = makeAff
   (\cb -> mempty <$ thenImpl
     p
-    (mkEffectFn1 $ cb <<< Left <<< coerce)
+    (mkEffectFn1 $ cb <<< Left <<< customCoerce)
     (mkEffectFn1 $ cb <<< Right))
 
 -- | Utility to convert an Effect returning a Promise into an Aff (i.e. the inverse of fromAff)

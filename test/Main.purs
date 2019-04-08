@@ -2,14 +2,16 @@ module Test.Main where
 
 import Prelude
 
-import Control.Monad.Except (throwError)
+import Control.Monad.Except (runExcept, throwError)
 import Control.Promise (Promise)
 import Control.Promise as Promise
 import Data.Either (either)
 import Effect (Effect)
 import Effect.Aff (attempt)
 import Effect.Class (liftEffect)
-import Effect.Exception (message, error)
+import Effect.Exception (error, message)
+import Foreign (readString, unsafeFromForeign)
+import Foreign.Index (readProp)
 import Test.Unit (suite, test, timeout)
 import Test.Unit.Assert as Assert
 import Test.Unit.Main (runTest)
@@ -17,6 +19,8 @@ import Test.Unit.Main (runTest)
 foreign import helloPromise :: Promise String
 
 foreign import errPromise :: Promise String
+
+foreign import customErrPromise :: Promise String
 
 foreign import goodbyePromise :: Promise String
 
@@ -28,6 +32,9 @@ main = runTest do
       Assert.equal "Hello" s
     test "err" do
       res <- attempt $ Promise.toAff errPromise
+      Assert.equal "err" $ either message (const "-") res
+    test "customErr" do
+      res <- attempt $ Promise.toAff' errorCodeCoerce customErrPromise
       Assert.equal "err" $ either message (const "-") res
     test "Goodbye" do
       res <- attempt $ Promise.toAff goodbyePromise
@@ -46,3 +53,6 @@ main = runTest do
       promise <- liftEffect $ Promise.fromAff $ throwError $ error "err123"
       res <- attempt $ Promise.toAff promise
       Assert.equal "err123" $ either message (const "-") res
+  where
+    errorCodeCoerce v = either (\_ -> error "fail") error $
+                          (runExcept $ readProp "code" (unsafeFromForeign v) >>= readString)
