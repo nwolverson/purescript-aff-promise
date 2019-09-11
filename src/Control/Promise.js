@@ -24,3 +24,15 @@ exports.thenImpl = function(promise) {
     };
   };
 };
+
+exports.deferred = function () {
+    var resolve;
+    var reject;
+
+    var promise = new Promise(function (success, error) {
+       resolve = function (s) { return function() { return success(s); } };
+       reject = function() { return error(); };
+    });
+
+    return ({ promise: promise, resolve: resolve, reject: reject });
+};

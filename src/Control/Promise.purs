@@ -1,4 +1,4 @@
-module Control.Promise (fromAff, toAff, toAff', toAffE, Promise()) where
+module Control.Promise (fromAff, toAff, toAff', toAffE, Promise(), deferred) where
 
 import Prelude
 
@@ -21,6 +21,8 @@ foreign import promise :: forall a b.
   ((a -> Effect Unit) -> (b -> Effect Unit) -> Effect Unit) -> Effect (Promise a)
 foreign import thenImpl :: forall a b.
   Promise a -> (EffectFn1 Foreign b) -> (EffectFn1 a b) -> Effect Unit
+foreign import deferred :: forall a.
+  Effect { promise :: Promise a, resolve :: a -> Effect Unit, reject :: Effect Unit}
 
 -- | Convert an Aff into a Promise.
 fromAff :: forall a. Aff a -> Effect (Promise a)

@@ -7,7 +7,7 @@ import Control.Promise (Promise)
 import Control.Promise as Promise
 import Data.Either (either)
 import Effect (Effect)
-import Effect.Aff (attempt)
+import Effect.Aff (attempt, forkAff, joinFiber)
 import Effect.Class (liftEffect)
 import Effect.Exception (error, message)
 import Foreign (readString, unsafeFromForeign)
@@ -53,6 +53,14 @@ main = runTest do
       promise <- liftEffect $ Promise.fromAff $ throwError $ error "err123"
       res <- attempt $ Promise.toAff promise
       Assert.equal "err123" $ either message (const "-") res
+  suite "deferred" do
+    test "resolve" do
+      {promise, resolve} <- liftEffect Promise.deferred
+      fiber <- forkAff do
+        res <- Promise.toAff promise
+        Assert.equal "Hello" res
+      liftEffect $ resolve "Hello"
+      joinFiber fiber
   where
     errorCodeCoerce v = either (\_ -> error "fail") error $
                           (runExcept $ readProp "code" (unsafeFromForeign v) >>= readString)
