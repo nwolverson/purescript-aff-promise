@@ -62,7 +62,7 @@ The response can then be converted to an `Aff` and consumed easily:
 import Control.Promise as Promise
 
 fetch :: String -> Aff String
-fetch url = liftEffect (fetchImpl url) >>= Promise.toAff
+fetch = fetchImpl >>> Promise.toAffE
 ```
 
 # Documentation
