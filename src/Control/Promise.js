@@ -24,3 +24,9 @@ exports.thenImpl = function(promise) {
     };
   };
 };
+
+exports.isError = function(x) { return x instanceof Error; }
+
+exports.safeToString = function(x) {
+  return x === null ? "null" : typeof x === "undefined" ? "undefined" : x.toString();
+}

@@ -15,10 +15,18 @@
     "output"
   ],
   "dependencies": {
-    "purescript-aff": "^5.0.0",
-    "purescript-foreign": "^5.0.0"
+    "purescript-aff": "^5.1.2",
+    "purescript-foreign": "^5.0.0",
+    "purescript-record": "^2.0.2",
+    "purescript-typelevel-prelude": "^5.0.2"
   },
   "devDependencies": {
-    "purescript-test-unit": "justinwoo/purescript-test-unit#compiler/0.12"
+    "purescript-test-unit": "^14.0.0",
+    "purescript-quickcheck": "^6.1.0"
+  },
+  "resolutions": {
+    "purescript-quickcheck": "^6.1.0",
+    "purescript-record": "^2.0.2",
+    "purescript-typelevel-prelude": "^5.0.2"
   }
 }

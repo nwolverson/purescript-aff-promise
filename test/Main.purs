@@ -20,6 +20,14 @@ foreign import helloPromise :: Promise String
 
 foreign import errPromise :: Promise String
 
+foreign import errDescendantPromise :: Promise String
+
+foreign import toStringableErrPromise :: Promise String
+
+foreign import nullErrPromise :: Promise String
+
+foreign import undefinedErrPromise :: Promise String
+
 foreign import customErrPromise :: Promise String
 
 foreign import goodbyePromise :: Promise String
@@ -36,6 +44,18 @@ main = runTest do
     test "customErr" do
       res <- attempt $ Promise.toAff' errorCodeCoerce customErrPromise
       Assert.equal "err" $ either message (const "-") res
+    test "default coerceError recognizes classes descending from Error" do
+      res <- attempt $ Promise.toAff errDescendantPromise
+      Assert.equal "Range error" $ either message (const "-") res
+    test "default coerceError uses `toString` as the final fallback" do
+      res <- attempt $ Promise.toAff toStringableErrPromise
+      Assert.equal "Promise failed: toString err" $ either message (const "-") res
+    test "default coerceError correctly handles the error being `null`" do
+      res <- attempt $ Promise.toAff nullErrPromise
+      Assert.equal "Promise failed: null" $ either message (const "-") res
+    test "default coerceError correctly handles the error being `undefined`" do
+      res <- attempt $ Promise.toAff undefinedErrPromise
+      Assert.equal "Promise failed: undefined" $ either message (const "-") res
     test "Goodbye" do
       res <- attempt $ Promise.toAff goodbyePromise
       Assert.equal "Goodbye" $ either message (const "-") res
