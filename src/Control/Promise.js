@@ -25,7 +25,8 @@ exports.thenImpl = function(promise) {
   };
 };
 
-exports.isError = x => x instanceof Error
+exports.isError = function(x) { return x instanceof Error; }
 
-exports.safeToString = x =>
-  x === null ? "null" : typeof x === "undefined" ? "undefined" : x.toString()
+exports.safeToString = function(x) {
+  return x === null ? "null" : typeof x === "undefined" ? "undefined" : x.toString();
+}
