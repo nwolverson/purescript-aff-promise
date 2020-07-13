@@ -18,6 +18,7 @@
   "homepage": "https://github.com/nwolverson/purescript-aff-promise#readme",
   "devDependencies": {
     "pulp": "^12.2.0",
+    "purescript": "^0.13.8",
     "purescript-psa": "^0.6.0"
   }
 }

@@ -20,6 +20,8 @@ foreign import helloPromise :: Promise String
 
 foreign import errPromise :: Promise String
 
+foreign import errDescendantPromise :: Promise String
+
 foreign import customErrPromise :: Promise String
 
 foreign import goodbyePromise :: Promise String
@@ -36,6 +38,9 @@ main = runTest do
     test "customErr" do
       res <- attempt $ Promise.toAff' errorCodeCoerce customErrPromise
       Assert.equal "err" $ either message (const "-") res
+    test "default coerceError recognizes classes descending from Error" do
+      res <- attempt $ Promise.toAff errDescendantPromise
+      Assert.equal "DOM exception" $ either message (const "-") res
     test "Goodbye" do
       res <- attempt $ Promise.toAff goodbyePromise
       Assert.equal "Goodbye" $ either message (const "-") res
