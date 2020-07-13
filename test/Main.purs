@@ -46,7 +46,7 @@ main = runTest do
       Assert.equal "err" $ either message (const "-") res
     test "default coerceError recognizes classes descending from Error" do
       res <- attempt $ Promise.toAff errDescendantPromise
-      Assert.equal "DOM exception" $ either message (const "-") res
+      Assert.equal "Range error" $ either message (const "-") res
     test "default coerceError uses `toString` as the final fallback" do
       res <- attempt $ Promise.toAff toStringableErrPromise
       Assert.equal "Promise failed: toString err" $ either message (const "-") res
