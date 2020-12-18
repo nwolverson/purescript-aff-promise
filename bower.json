@@ -15,8 +15,8 @@
     "output"
   ],
   "dependencies": {
-    "purescript-aff": "^5.0.0",
-    "purescript-foreign": "^5.0.0"
+    "purescript-aff": "main",
+    "purescript-foreign": "master"
   },
   "devDependencies": {
     "purescript-test-unit": "justinwoo/purescript-test-unit#compiler/0.12"
