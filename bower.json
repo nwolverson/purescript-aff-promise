@@ -19,6 +19,7 @@
     "purescript-foreign": "master"
   },
   "devDependencies": {
-    "purescript-test-unit": "justinwoo/purescript-test-unit#compiler/0.12"
+    "purescript-assert": "master",
+    "purescript-datetime": "master"
   }
 }
