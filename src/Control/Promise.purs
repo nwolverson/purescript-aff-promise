@@ -17,6 +17,8 @@ import Foreign (Foreign, readString, unsafeReadTagged)
 -- | results in the promise.
 foreign import data Promise :: Type -> Type
 
+type role Promise representational
+
 foreign import promise :: forall a b.
   ((a -> Effect Unit) -> (b -> Effect Unit) -> Effect Unit) -> Effect (Promise a)
 foreign import thenImpl :: forall a b.
