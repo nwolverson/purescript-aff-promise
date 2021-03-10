@@ -6,7 +6,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git://github.com/nwolverson/purescript-aff-promise.git"
+    "url": "https://github.com/nwolverson/purescript-aff-promise.git"
   },
   "ignore": [
     "**/.*",
@@ -15,11 +15,11 @@
     "output"
   ],
   "dependencies": {
-    "purescript-aff": "main",
-    "purescript-foreign": "master"
+    "purescript-aff": "v6.0.0",
+    "purescript-foreign": "v6.0.0"
   },
   "devDependencies": {
-    "purescript-assert": "master",
-    "purescript-datetime": "master"
+    "purescript-assert": "v5.0.0",
+    "purescript-datetime": "v5.0.0"
   }
 }
