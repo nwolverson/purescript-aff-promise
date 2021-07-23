@@ -49,8 +49,8 @@ fromAffPure aff = promisePure (mkFn2 (\succ err -> runAff_ (either err succ) aff
 coerce :: Foreign -> Error
 coerce fn =
   either (\_ -> error "Promise failed, couldn't extract JS Error or String")
-    identity
-    (runExcept ((unsafeReadTagged "Error" fn) <|> (error <$> readString fn)))
+         identity
+         (runExcept ((unsafeReadTagged "Error" fn) <|> (error <$> readString fn)))
 
 -- | Convert a Promise into an Aff.
 -- | When the promise rejects, we attempt to
@@ -63,15 +63,11 @@ toAff = toAff' coerce
 -- | When the promise rejects, we attempt to coerce the error value into an
 -- | actual JavaScript Error object using the provided function.
 toAff' :: forall a. (Foreign -> Error) -> Promise a -> Aff a
-toAff' customCoerce p =
-  makeAff
-    ( \cb ->
-        mempty
-          <$ thenImpl
-              p
-              (mkEffectFn1 $ cb <<< Left <<< customCoerce)
-              (mkEffectFn1 $ cb <<< Right)
-    )
+toAff' customCoerce p = makeAff
+  (\cb -> mempty <$ thenImpl
+    p
+    (mkEffectFn1 $ cb <<< Left <<< customCoerce)
+    (mkEffectFn1 $ cb <<< Right))
 
 -- | Utility to convert an Effect returning a Promise into an Aff (i.e. the inverse of fromAff)
 toAffE :: forall a. Effect (Promise a) -> Aff a
