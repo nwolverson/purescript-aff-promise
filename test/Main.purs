@@ -77,15 +77,19 @@ main = launchAff_ $ flip runReaderT "" do
   suite "round-trip" do
     test "success" do
       timeout 100 $ do
-        promise <- liftEffect $ Promise.fromAff $ pure 42
+        promise <- liftEffect $ Promise.fromAffE $ pure 42
         res <- Promise.toAff promise
         assert "round-trip result is 42" $ res == 42
+    test "fromAff" do
+      timeout 100 do
+        res <- Promise.toAff $ Promise.fromAff $ pure 8008
+        assert "round-trip result for toAffE is 8008" $ res == 8008
     test "toAffE" do
       timeout 100 do
-        res <- Promise.toAffE $ Promise.fromAff $ pure 123
+        res <- Promise.toAffE $ Promise.fromAffE $ pure 123
         assert "round-trip result for toAffE is 123" $ res == 123
     test "error" do
-      promise <- liftEffect $ Promise.fromAff $ throwError $ error "err123"
+      promise <- liftEffect $ Promise.fromAffE $ throwError $ error "err123"
       res <- attempt $ Promise.toAff promise
       shouldEqual "err123" $ either message (const "-") res
   where
