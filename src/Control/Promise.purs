@@ -1,6 +1,6 @@
 module Control.Promise
   ( fromAff
-  , fromAffE
+  , fromAffPure
   , toAff
   , toAff'
   , toAffE
@@ -27,11 +27,11 @@ foreign import data Promise :: Type -> Type
 
 type role Promise representational
 
-foreign import promiseE ::
+foreign import promise ::
   forall a b.
   ((a -> Effect Unit) -> (b -> Effect Unit) -> Effect Unit) -> Effect (Promise a)
 
-foreign import promise ::
+foreign import promisePure ::
   forall a b.
   (Fn2 (a -> Effect Unit) (b -> Effect Unit) (Effect Unit)) -> Promise a
 
@@ -40,11 +40,11 @@ foreign import thenImpl ::
   Promise a -> (EffectFn1 Foreign b) -> (EffectFn1 a b) -> Effect Unit
 
 -- | Convert an Aff into a Promise.
-fromAffE :: forall a. Aff a -> Effect (Promise a)
-fromAffE aff = promiseE (\succ err -> runAff_ (either err succ) aff)
+fromAff :: forall a. Aff a -> Effect (Promise a)
+fromAff aff = promise (\succ err -> runAff_ (either err succ) aff)
 
-fromAff :: forall a. Aff a -> Promise a
-fromAff aff = promise (mkFn2 (\succ err -> runAff_ (either err succ) aff))
+fromAffPure :: forall a. Aff a -> Promise a
+fromAffPure aff = promisePure (mkFn2 (\succ err -> runAff_ (either err succ) aff))
 
 coerce :: Foreign -> Error
 coerce fn =
