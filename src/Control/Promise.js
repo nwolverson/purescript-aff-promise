@@ -1,6 +1,6 @@
 // module Control.Promise
 
-exports.promise = function (f) {
+export function promise(f) {
   return function () {
     return new Promise(function (success, error) {
       var succF = function (s) { return function() { return success(s); } };
@@ -13,9 +13,9 @@ exports.promise = function (f) {
       }
     });
   };
-};
+}
 
-exports.thenImpl = function(promise) {
+export function thenImpl(promise) {
   return function(errCB) {
     return function(succCB) {
       return function() {
@@ -23,4 +23,4 @@ exports.thenImpl = function(promise) {
       };
     };
   };
-};
+}

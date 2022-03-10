@@ -99,6 +99,9 @@ in  upstream
 -------------------------------
 -}
 let upstream =
-      https://github.com/purescript/package-sets/releases/download/psc-0.14.3-20210722/packages.dhall sha256:1ceb43aa59436bf5601bac45f6f3781c4e1f0e4c2b8458105b018e5ed8c30f8c
+      https://github.com/working-group-purescript-es/package-sets/releases/download/0.1.0/package-set.dhall
+        sha256:642a07499270b2a0425accb35a043b72297bcd957965c2b50f0b34b558c59bc4
 
-in  upstream
+in upstream
+  with `assert`.repo = "https://github.com/megamaddu/purescript-assert"
+  with `assert`.version = "purs-0.15-updates"
