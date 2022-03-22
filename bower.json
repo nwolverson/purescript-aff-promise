@@ -15,11 +15,11 @@
     "output"
   ],
   "dependencies": {
-    "purescript-aff": "v6.0.0",
-    "purescript-foreign": "v6.0.0"
+    "purescript-aff": "master",
+    "purescript-foreign": "master"
   },
   "devDependencies": {
-    "purescript-assert": "v5.0.0",
-    "purescript-datetime": "v5.0.0"
+    "purescript-assert": "master",
+    "purescript-datetime": "master"
   }
 }
