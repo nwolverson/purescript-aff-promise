@@ -21,10 +21,8 @@ to generate this file without the comments in this block.
   , "either"
   , "exceptions"
   , "foreign"
-  , "functions"
   , "integers"
   , "prelude"
-  , "psci-support"
   , "transformers"
   ]
 , packages = ./packages.dhall
