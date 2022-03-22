@@ -1,5 +1,3 @@
-// module Control.Promise
-
 export function promise(f) {
   return function () {
     return new Promise(function (success, error) {
