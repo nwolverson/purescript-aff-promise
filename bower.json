@@ -15,7 +15,7 @@
     "output"
   ],
   "dependencies": {
-    "purescript-aff": "master",
+    "purescript-aff": "main",
     "purescript-foreign": "master"
   },
   "devDependencies": {
