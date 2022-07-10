@@ -1,4 +1,4 @@
-module Control.Promise (fromAff, toAff, toAff', toAffE, Promise()) where
+module Control.Promise (fromAff, toAff, toAff', toAffE, module PromiseReexport) where
 
 import Prelude
 
@@ -9,24 +9,16 @@ import Effect (Effect)
 import Effect.Aff (Aff, makeAff, runAff_)
 import Effect.Class (liftEffect)
 import Effect.Exception (Error, error)
-import Effect.Uncurried (EffectFn1, mkEffectFn1)
-import Foreign (Foreign, readString, unsafeReadTagged)
-
--- | Type of JavaScript Promises (with particular return type)
--- | Effects are not traced in the Promise type, as they form part of the Effect that
--- | results in the promise.
-foreign import data Promise :: Type -> Type
-
-type role Promise representational
-
-foreign import promise :: forall a b.
-  ((a -> Effect Unit) -> (b -> Effect Unit) -> Effect Unit) -> Effect (Promise a)
-foreign import thenImpl :: forall a b.
-  Promise a -> (EffectFn1 Foreign b) -> (EffectFn1 a b) -> Effect Unit
+import Foreign (Foreign, readString, unsafeReadTagged, unsafeToForeign)
+import Web.Promise (class Flatten, Promise, resolve)
+import Web.Promise (class Flatten, Promise) as PromiseReexport
+import Web.Promise as Promise
+import Web.Promise.Rejection as Rejection
 
 -- | Convert an Aff into a Promise.
-fromAff :: forall a. Aff a -> Effect (Promise a)
-fromAff aff = promise (\succ err -> runAff_ (either err succ) aff)
+fromAff :: forall a b. (Flatten a b) => Aff a -> Effect (Promise b)
+fromAff aff = Promise.new $
+  \succ err -> runAff_ (either (err <<< Rejection.fromError) succ) aff
 
 coerce :: Foreign -> Error
 coerce fn =
@@ -45,11 +37,10 @@ toAff = toAff' coerce
 -- | When the promise rejects, we attempt to coerce the error value into an
 -- | actual JavaScript Error object using the provided function.
 toAff' :: forall a. (Foreign -> Error) -> Promise a -> Aff a
-toAff' customCoerce p = makeAff
-  (\cb -> mempty <$ thenImpl
-    p
-    (mkEffectFn1 $ cb <<< Left <<< customCoerce)
-    (mkEffectFn1 $ cb <<< Right))
+toAff' customCoerce promise = makeAff $ \cb -> do
+  withContinuation <- Promise.then_ (map resolve <<< cb <<< Right) promise
+  _ <- Promise.catch (map resolve <<< cb <<< Left <<< customCoerce <<< unsafeToForeign) withContinuation
+  pure mempty
 
 -- | Utility to convert an Effect returning a Promise into an Aff (i.e. the inverse of fromAff)
 toAffE :: forall a. Effect (Promise a) -> Aff a
