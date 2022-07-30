@@ -3,9 +3,9 @@ module Test.Main where
 import Prelude
 
 import Control.Alt ((<|>))
-import Control.Monad.Reader.Trans (runReaderT)
-import Control.Monad.Reader.Class (class MonadReader, ask, local)
 import Control.Monad.Except (runExcept)
+import Control.Monad.Reader.Class (class MonadReader, ask, local)
+import Control.Monad.Reader.Trans (runReaderT)
 import Control.Promise (Promise)
 import Control.Promise as Promise
 import Data.Either (either)
@@ -17,7 +17,7 @@ import Effect.Aff.Class (class MonadAff, liftAff)
 import Effect.Class (class MonadEffect, liftEffect)
 import Effect.Console (log)
 import Effect.Exception (error, message)
-import Foreign (readString, unsafeFromForeign)
+import Foreign (readString, unsafeToForeign)
 import Foreign.Index (readProp)
 import Test.Assert as Assert
 
@@ -86,8 +86,8 @@ main = launchAff_ $ flip runReaderT "" do
         assert "round-trip result for toAffE is 123" $ res == 123
     test "error" do
       promise <- liftEffect $ Promise.fromAff $ throwError $ error "err123"
-      res <- attempt $ Promise.toAff promise
+      res <- attempt $ Promise.toAff (promise :: Promise Unit)
       shouldEqual "err123" $ either message (const "-") res
   where
     errorCodeCoerce v = either (\_ -> error "fail") error $
-                          (runExcept $ readProp "code" (unsafeFromForeign v) >>= readString)
+                          (runExcept $ readProp "code" (unsafeToForeign v) >>= readString)

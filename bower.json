@@ -16,7 +16,8 @@
   ],
   "dependencies": {
     "purescript-aff": "^7.0.0",
-    "purescript-foreign": "^7.0.0"
+    "purescript-foreign": "^7.0.0",
+    "purescript-web-promise": "purescript-web/purescript-web-promise#^3.1.0"
   },
   "devDependencies": {
     "purescript-assert": "^6.0.0",
