@@ -3,22 +3,22 @@ module Test.Main where
 import Prelude
 
 import Control.Alt ((<|>))
-import Control.Monad.Reader.Trans (runReaderT)
-import Control.Monad.Reader.Class (class MonadReader, ask, local)
 import Control.Monad.Except (runExcept)
-import Control.Promise (Promise)
-import Control.Promise as Promise
+import Control.Monad.Reader.Class (class MonadReader, ask, local)
+import Control.Monad.Reader.Trans (runReaderT)
 import Data.Either (either)
 import Data.Int (toNumber)
 import Data.Time.Duration (Milliseconds(..))
 import Effect (Effect)
-import Effect.Aff (Aff, delay, attempt, throwError, launchAff_, sequential, parallel)
+import Effect.Aff (Aff, attempt, delay, launchAff_, parallel, sequential, throwError)
 import Effect.Aff.Class (class MonadAff, liftAff)
 import Effect.Class (class MonadEffect, liftEffect)
 import Effect.Console (log)
 import Effect.Exception (error, message)
-import Foreign (readString, unsafeFromForeign)
+import Foreign (readString, unsafeToForeign)
 import Foreign.Index (readProp)
+import Promise.Aff (Promise)
+import Promise.Aff as Promise
 import Test.Assert as Assert
 
 suite :: forall m. MonadReader String m => MonadEffect m => String -> m Unit -> m Unit
@@ -47,8 +47,7 @@ makeTimeout time = do
 
 timeout :: Int -> Aff Unit -> Aff Unit
 timeout time theTest = do
-  r <- sequential $
-          parallel (attempt $ makeTimeout time) <|> parallel (attempt theTest)
+  r <- sequential $ parallel (attempt $ makeTimeout time) <|> parallel (attempt theTest)
   either throwError (const (pure unit)) r
 
 foreign import helloPromise :: Promise String
@@ -85,9 +84,10 @@ main = launchAff_ $ flip runReaderT "" do
         res <- Promise.toAffE $ Promise.fromAff $ pure 123
         assert "round-trip result for toAffE is 123" $ res == 123
     test "error" do
-      promise <- liftEffect $ Promise.fromAff $ throwError $ error "err123"
+      promise <- liftEffect $ Promise.fromAff (throwError (error "err123") :: Aff Unit)
       res <- attempt $ Promise.toAff promise
       shouldEqual "err123" $ either message (const "-") res
   where
-    errorCodeCoerce v = either (\_ -> error "fail") error $
-                          (runExcept $ readProp "code" (unsafeFromForeign v) >>= readString)
+  errorCodeCoerce v =
+    either (\_ -> error "fail") error
+      (runExcept $ readProp "code" (unsafeToForeign v) >>= readString)
