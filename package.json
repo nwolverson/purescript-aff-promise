@@ -3,7 +3,7 @@
   "private": true,
   "description": "Simple library for interop between Aff and JavaScript promises.",
   "scripts": {
-    "build": "pulp build -- --censor-lib --strict",
+    "build": "purs-tidy check --config-require src && pulp build -- --censor-lib --strict",
     "test": "pulp test"
   },
   "repository": {
@@ -17,7 +17,8 @@
   },
   "homepage": "https://github.com/nwolverson/purescript-aff-promise#readme",
   "devDependencies": {
-    "pulp": "^16.0.0-0",
-    "purescript-psa": "^0.8.2"
+    "pulp": "^16.0.2",
+    "purescript-psa": "^0.8.2",
+    "purs-tidy": "^0.9.2"
   }
 }
