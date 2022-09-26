@@ -19,7 +19,7 @@ import Promise as Promise
 import Promise.Rejection as Rejection
 
 -- | Convert an Aff into a Promise.
-fromAff :: forall a. Promise.Flatten a a => Aff a -> Effect (Promise.Promise a)
+fromAff :: forall a b. Promise.Flatten a b => Aff a -> Effect (Promise.Promise b)
 fromAff aff = Promise.new (\succ err -> runAff_ (either (err <<< Rejection.fromError) succ) aff)
 
 coerce :: Promise.Rejection -> Error

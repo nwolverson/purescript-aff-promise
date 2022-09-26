@@ -84,8 +84,8 @@ main = launchAff_ $ flip runReaderT "" do
         res <- Promise.toAffE $ Promise.fromAff $ pure 123
         assert "round-trip result for toAffE is 123" $ res == 123
     test "error" do
-      promise <- liftEffect $ Promise.fromAff (throwError (error "err123"))
-      res <- attempt $ Promise.toAff (promise :: Promise Unit)
+      promise <- liftEffect $ Promise.fromAff (throwError (error "err123") :: Aff Unit)
+      res <- attempt $ Promise.toAff promise
       shouldEqual "err123" $ either message (const "-") res
   where
   errorCodeCoerce v =
